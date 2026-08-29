@@ -82,14 +82,17 @@
       // The destination address lives in .env on the server, not in this file,
       // because the repo is public. Fetched once on load so the mailto fallback
       // still knows where to send if the API is unreachable later.
+      // Relative, not root-absolute: on a host that serves the site under a
+      // subpath (GitHub Pages uses /<repo>/) a leading slash would escape to
+      // the domain root and miss the API entirely.
       let TO = '';
-      fetch('/api/health')
-        .then((res) => res.json())
+      fetch('api/health')
+        .then((res) => (res.ok ? res.json() : null))
         .then((info) => {
-          TO = info.to || '';
+          TO = info?.to || '';
         })
         .catch(() => {
-          /* offline: the fallback below degrades to saving the answer locally */
+          /* no backend here: the fallback below handles it */
         });
 
       const form = document.querySelector('[data-form]');
@@ -248,19 +251,25 @@
         };
 
         try {
-          const res = await fetch('/api/invite', {
+          const res = await fetch('api/invite', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
           });
-          const body = await res.json().catch(() => ({}));
+
+          const body = await res.json().catch(() => null);
+          // A static host answers 404/405 with HTML rather than failing outright,
+          // so "the request completed" does not mean a backend exists. Only a
+          // JSON body carrying our own `ok` flag proves we reached the server.
+          const reachedServer = body !== null && typeof body.ok === 'boolean';
+          if (!reachedServer) throw new Error('no backend');
 
           if (!res.ok) {
             showErrors(body.errors);
             setStatus(body.error || 'The server refused that. Check the fields.', 'error');
             sending = false;
             submit.removeAttribute('aria-disabled');
-            submit.textContent = 'Confirm queue';
+            submit.textContent = 'Lock it in';
             return;
           }
           done(Boolean(body.mailed));
