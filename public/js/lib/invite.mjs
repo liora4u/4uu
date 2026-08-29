@@ -13,13 +13,19 @@ const NOTE_MAX = 280;
 const NAME_MAX = 40;
 const MAX_DAYS_AHEAD = 60;
 
-/** Strip anything that could break out of a mail header or an HTML body. */
+/**
+ * Strip anything that could break out of a mail header.
+ *
+ * Angle brackets are deliberately kept: they are escaped by escapeHtml at the
+ * point they enter an HTML body, which is the only context where they are
+ * dangerous. Removing them here instead would quietly turn "<3" into "3" and
+ * mangle whatever else she types.
+ */
 export function sanitizeText(input, max = NOTE_MAX) {
   if (typeof input !== 'string') return '';
   return input
     // Control characters, including the CR/LF that enable header injection.
     .replace(/[\x00-\x1F\x7F]+/g, ' ')
-    .replace(/[<>]/g, '')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, max);
