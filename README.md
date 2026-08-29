@@ -13,7 +13,6 @@ the hook      the pitch     yes / no     the message    day + time    the answer
 
 ```bash
 npm install
-npm run assets     # downloads the Valorant art + webfonts (~1.9 MB)
 npm start          # http://localhost:3000
 ```
 
@@ -65,9 +64,9 @@ Audio, so those need no files and always work.
 
 Agent portraits, ability icons and map splashes come from
 [valorant-api.com](https://valorant-api.com) (Riot's public asset CDN, no key).
-`npm run assets` downloads and re-encodes them to webp — 28 MB of source art
-becomes 1.9 MB. They are stored locally, so the site never depends on a third
-party at view time.
+They are committed, so a clone runs with no extra steps. `npm run assets`
+re-fetches and re-encodes them to webp — 28 MB of source art becomes 1.9 MB —
+if you want to change which agents appear.
 
 ## Tests
 
