@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!--
+      GitHub Pages serves the repository root, but the site lives in public/.
+      This forwards to it so the Pages URL lands on the invitation rather than
+      on a directory listing. Running `npm start` serves public/ directly and
+      never touches this file.
+    -->
+    <meta http-equiv="refresh" content="0; url=./public/index.html" />
+    <link rel="canonical" href="./public/index.html" />
+    <title>Operation: All Day</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #080d13;
+        color: #ece8e1;
+        font: 500 15px/1.5 system-ui, sans-serif;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      a {
+        color: #ff4655;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Opening&hellip; <a href="./public/index.html">continue</a></p>
+    <script>
+      location.replace('./public/index.html');
+    </script>
+  </body>
+</html>
