@@ -1,0 +1,15 @@
+node_modules/
+
+# Local secrets and the answers she submits.
+.env
+invites.log
+
+# Riot artwork and webfonts, fetched by `npm run assets`. Not committed: they
+# are regenerable, and Riot's assets are theirs to distribute, not mine.
+public/img/
+public/fonts/
+public/css/fonts.css
+public/js/agents.js
+
+# Test tooling output.
+.playwright-mcp/

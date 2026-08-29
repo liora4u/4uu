@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f1923" />
+    <title>Locked in — Operation: All Day</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230f1923'/%3E%3Cpath d='M4 6l11 14h-6L4 13z' fill='%23ff4655'/%3E%3Cpath d='M28 6L17 20h6l5-7z' fill='%23c347c7'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+  </head>
+  <body>
+    <main>
+      <section class="stage locked">
+        <div class="layers">
+          <div class="layer layer--far" data-depth="0.12" style="background-image: url('img/map-lotus.webp')"></div>
+          <div class="layer layer--mid" data-depth="0.24" style="background-image: url('img/agent-clove-bg.webp')"></div>
+          <div class="layer layer--wash"></div>
+        </div>
+
+        <img class="hero__agent" data-depth="0.3" src="img/agent-clove-full.webp" alt="" aria-hidden="true" />
+
+        <div class="shell locked__inner">
+          <p class="eyebrow eyebrow--mint" data-reveal>you said yes</p>
+
+          <h1 class="locked__title" data-reveal style="--delay: 60ms">locked in</h1>
+
+          <div class="locked__body">
+            <p data-reveal style="--delay: 140ms">
+              Okay. That is the whole day booked. No takebacks, the button already went through.
+            </p>
+            <p data-reveal style="--delay: 200ms">
+              Here is what you have agreed to. I clear the day, you instalock Clove, and neither of us
+              checks the time even once. If you are playing badly we keep going until you are not. If
+              you are playing well we keep going, because <strong>why would we stop</strong>.
+            </p>
+            <p data-reveal style="--delay: 260ms">
+              You are the one I actually want in the lobby. Not a fill, not a random, not someone who
+              says <em>one more</em> and then leaves right after it. You.
+            </p>
+            <p class="locked__sig" data-reveal style="--delay: 320ms">now pick when — your duo</p>
+          </div>
+
+          <div class="row-actions" data-reveal style="--delay: 380ms">
+            <a class="btn btn--clove" href="schedule.html">Pick our time</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { mountHud } from './js/hud.mjs';
+      import { initParallax, initReveal } from './js/parallax.mjs';
+      import { armTicks, confirm as chime } from './js/sfx.mjs';
+      import { state } from './js/state.mjs';
+
+      state.set({ said: 'yes' });
+
+      mountHud(3);
+      initParallax();
+      initReveal();
+      armTicks();
+
+      // The payoff sound, once the reveal has settled. Browsers block audio on a
+      // fresh document until it is interacted with, so retry on her first move.
+      setTimeout(chime, 350);
+      ['pointerdown', 'keydown'].forEach((evt) =>
+        window.addEventListener(evt, () => chime(), { once: true, passive: true }),
+      );
+    </script>
+  </body>
+</html>

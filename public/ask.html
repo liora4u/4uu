@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f1923" />
+    <title>The ask — Operation: All Day</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230f1923'/%3E%3Cpath d='M4 6l11 14h-6L4 13z' fill='%23ff4655'/%3E%3Cpath d='M28 6L17 20h6l5-7z' fill='%23c347c7'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+  </head>
+  <body class="page-ask">
+    <main>
+      <section class="stage ask">
+        <div class="layers">
+          <div class="layer layer--far" data-depth="0.12" style="background-image: url('img/map-breeze.webp')"></div>
+          <div class="layer layer--mid" data-depth="0.22" style="background-image: url('img/agent-clove-bg.webp')"></div>
+          <div class="layer layer--wash"></div>
+        </div>
+
+        <div class="shell ask__inner">
+          <p class="eyebrow" data-reveal>okay, the actual question</p>
+
+          <h2 class="ask__question" data-reveal style="--delay: 60ms">
+            play valorant with me?<br /><span class="tint-clove">the whole day.</span>
+          </h2>
+
+          <p class="ask__taunt" data-taunt aria-live="polite">two buttons. one of them is correct.</p>
+
+          <div class="ask__buttons" data-reveal style="--delay: 160ms">
+            <button class="btn ask__yes" type="button" data-yes>Yes</button>
+            <button class="ask__no" type="button" data-no>no</button>
+          </div>
+
+          <p class="data ask__foot" data-reveal style="--delay: 220ms">
+            it takes one click. you already know which one.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <div class="wipe" data-wipe aria-hidden="true"></div>
+
+    <script type="module">
+      import { mountHud } from './js/hud.mjs';
+      import { initParallax, initReveal } from './js/parallax.mjs';
+      import { armTicks, lock } from './js/sfx.mjs';
+      import { initDodgeButton } from './js/dodge-button.mjs';
+      import { state } from './js/state.mjs';
+
+      const yes = document.querySelector('[data-yes]');
+      const no = document.querySelector('[data-no]');
+      const taunt = document.querySelector('[data-taunt]');
+      const wipe = document.querySelector('[data-wipe]');
+
+      let leaving = false;
+
+      /** Agent-select lock-in: sound, diagonal wipe, then the next page. */
+      function accept() {
+        if (leaving) return;
+        leaving = true;
+
+        state.set({ said: 'yes', at: Date.now() });
+        lock();
+        document.body.classList.add('is-locking');
+        wipe.classList.add('is-on');
+
+        const go = () => {
+          window.location.href = 'yes.html';
+        };
+        wipe.addEventListener('transitionend', go, { once: true });
+        setTimeout(go, 1200); // in case the transition never fires
+      }
+
+      yes.addEventListener('click', accept);
+
+      initDodgeButton({
+        no,
+        yes,
+        taunt,
+        // Worn down after enough attempts, it starts agreeing with me.
+        onSurrender: () => no.addEventListener('click', accept),
+      });
+
+      mountHud(2);
+      initParallax();
+      initReveal();
+      armTicks();
+    </script>
+  </body>
+</html>

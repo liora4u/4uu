@@ -1,0 +1,19 @@
+{
+  "name": "operation-all-day",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A Valorant duo-queue invitation, with a mail relay for the chosen time.",
+  "scripts": {
+    "start": "node server.js",
+    "assets": "node scripts/fetch-assets.mjs && node scripts/optimize-assets.mjs",
+    "test": "node --test \"test/*.test.mjs\""
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemailer": "^6.10.0"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.5"
+  }
+}

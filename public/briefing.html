@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f1923" />
+    <title>Briefing — Operation: All Day</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230f1923'/%3E%3Cpath d='M4 6l11 14h-6L4 13z' fill='%23ff4655'/%3E%3Cpath d='M28 6L17 20h6l5-7z' fill='%23c347c7'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+  </head>
+  <body>
+    <main>
+      <!-- 1. The dossier ------------------------------------------------->
+      <section class="stage">
+        <div class="layers">
+          <div class="layer layer--far" data-depth="0.12" style="background-image: url('img/map-haven.webp')"></div>
+          <div class="layer layer--mid" data-depth="0.24" style="background-image: url('img/agent-clove-bg.webp')"></div>
+          <div class="layer layer--wash"></div>
+        </div>
+
+        <div class="shell dossier">
+          <div class="dossier__text">
+            <p class="eyebrow eyebrow--clove" data-reveal>about you, specifically</p>
+            <h2 data-reveal style="--delay: 60ms">the one who<br />smokes for us</h2>
+            <p class="lead" data-reveal style="--delay: 140ms">
+              Clove is a Controller from Scotland who keeps playing after they die. You picked them
+              on purpose, and honestly that explains a lot about you.
+            </p>
+            <dl class="statline" data-reveal style="--delay: 200ms">
+              <div><dt class="data">agent</dt><dd>Clove</dd></div>
+              <div><dt class="data">role</dt><dd>Controller</dd></div>
+              <div><dt class="data">danger level</dt><dd class="tint-red">very high</dd></div>
+            </dl>
+          </div>
+
+          <figure class="dossier__art" data-reveal style="--delay: 120ms">
+            <img data-depth="0.18" src="img/agent-clove-full.webp" alt="Clove, the Controller agent she plays" />
+            <figcaption class="data">Clove / Controller / not dead yet</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- 2. The kit ----------------------------------------------------->
+      <section class="stage stage--short">
+        <div class="layers">
+          <div class="layer layer--far" data-depth="0.1" style="background-image: url('img/map-lotus.webp')"></div>
+          <div class="layer layer--wash"></div>
+        </div>
+
+        <div class="shell">
+          <p class="eyebrow" data-reveal>what you are like in game</p>
+          <h3 class="mb-lg" data-reveal style="--delay: 60ms">observed over many, many hours</h3>
+          <ul class="kit" data-kit></ul>
+        </div>
+      </section>
+
+      <!-- 3. The offer --------------------------------------------------->
+      <section class="stage stage--short">
+        <div class="layers">
+          <div class="layer layer--far" data-depth="0.1" style="background-image: url('img/map-sunset.webp')"></div>
+          <div class="layer layer--wash"></div>
+        </div>
+
+        <div class="shell">
+          <p class="eyebrow eyebrow--mint" data-reveal>things I am promising</p>
+          <h2 class="mb-lg" data-reveal style="--delay: 60ms">four small promises</h2>
+
+          <ol class="terms">
+            <li class="panel term" data-reveal>
+              <span class="term__n data">01</span>
+              <h4>you instalock Clove</h4>
+              <p>Not up for discussion. Nobody is taking that slot off you while I am in the lobby.</p>
+            </li>
+            <li class="panel term" data-reveal style="--delay: 80ms">
+              <span class="term__n data">02</span>
+              <h4>I will never be annoyed</h4>
+              <p>Whiff the ace, drop the smoke, reload at the worst moment. None of it comes up later.</p>
+            </li>
+            <li class="panel term" data-reveal style="--delay: 160ms">
+              <span class="term__n data">03</span>
+              <h4>disappear whenever</h4>
+              <p>Food, homework, vanishing for an hour with no explanation. All completely fine.</p>
+            </li>
+            <li class="panel term" data-reveal style="--delay: 240ms">
+              <span class="term__n data">04</span>
+              <h4>we stop when you want</h4>
+              <p>Your <em>one more</em> is honoured on request, and cheerfully ignored on request.</p>
+            </li>
+          </ol>
+
+          <!-- The one thing the four promises above do not cover. -->
+          <aside class="note" data-reveal>
+            <img class="note__art" src="img/agent-sage-full.webp" alt="Sage, the Sentinel" />
+            <div class="note__body">
+              <p class="eyebrow eyebrow--mint">one tiny request</p>
+              <h3 class="note__title">…could you play Sage?<br />just once?</h3>
+              <p>
+                I know. I have spent an entire page telling you to instalock Clove and I meant every
+                word of it. But you are a genuinely good Sage, and I would quite like to be brought
+                back by someone I trust.
+              </p>
+              <p class="note__foot data">one round. then straight back to Clove, I promise.</p>
+            </div>
+          </aside>
+
+          <div class="roster" data-reveal>
+            <p class="data roster__label">everyone else, waiting to be picked second</p>
+            <div class="roster__strip" data-roster></div>
+          </div>
+
+          <div class="row-actions" data-reveal>
+            <a class="btn" href="ask.html">Okay, I am listening</a>
+            <a class="btn btn--ghost" href="index.html">Back</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { mountHud } from './js/hud.mjs';
+      import { initParallax, initReveal } from './js/parallax.mjs';
+      import { armTicks } from './js/sfx.mjs';
+      import { AGENTS, MAIN_KIT } from './js/agents.js';
+
+      // Riot's icons, my scouting report.
+      const READING = {
+        'Pick-me-up': 'One kill and she is somehow fine again for the next three rounds.',
+        Meddle: 'Types "nice" in all chat. Enemy morale decays on contact.',
+        Ruse: 'Calls the smoke from the grave. Still better comms than most people alive.',
+        'Not Dead Yet':
+          'You cannot end the session. She announces she is going to sleep, leaves, and is back in the lobby eleven minutes later.',
+      };
+
+      const SLOTS = { Grenade: 'C', Ability1: 'Q', Ability2: 'E', Ultimate: 'X' };
+      const ORDER = ['Grenade', 'Ability1', 'Ability2', 'Ultimate'];
+
+      const kit = document.querySelector('[data-kit]');
+      kit.innerHTML = MAIN_KIT.slice()
+        .sort((a, b) => ORDER.indexOf(a.slot) - ORDER.indexOf(b.slot))
+        .map(
+          (ability, i) =>
+            '<li class="panel ability" data-reveal style="--delay:' + i * 70 + 'ms">' +
+            '<img class="ability__icon" src="' + ability.icon + '" alt="" />' +
+            '<span class="ability__key data">' + (SLOTS[ability.slot] || ability.slot) + '</span>' +
+            '<h4 class="ability__name">' + ability.name + '</h4>' +
+            '<p class="ability__note">' + (READING[ability.name] || 'Classified.') + '</p>' +
+            '</li>',
+        )
+        .join('');
+
+      const roster = document.querySelector('[data-roster]');
+      roster.innerHTML = AGENTS.map((agent) => {
+        const file = 'img/agent-' + agent.name.toLowerCase() + '-icon.webp';
+        // Clove is hers; Sage is the one I am quietly hoping for.
+        const cls =
+          agent.name === 'Clove' ? ' chip--main' : agent.name === 'Sage' ? ' chip--wanted' : '';
+        return (
+          '<figure class="chip' + cls + '" title="' + agent.name + '">' +
+          '<img src="' + file + '" alt="' + agent.name + '" loading="lazy" />' +
+          '<figcaption class="data">' + agent.name + '</figcaption>' +
+          '</figure>'
+        );
+      }).join('');
+
+      mountHud(1);
+      initParallax();
+      initReveal();
+      armTicks();
+    </script>
+  </body>
+</html>

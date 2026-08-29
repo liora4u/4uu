@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f1923" />
+    <title>Confirmed — Operation: All Day</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230f1923'/%3E%3Cpath d='M4 6l11 14h-6L4 13z' fill='%23ff4655'/%3E%3Cpath d='M28 6L17 20h6l5-7z' fill='%23c347c7'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+  </head>
+  <body>
+    <main>
+      <section class="stage confirmed">
+        <div class="layers">
+          <div class="layer layer--far" data-depth="0.12" style="background-image: url('img/map-ascent.webp')"></div>
+          <div class="layer layer--mid" data-depth="0.22" style="background-image: url('img/agent-clove-bg.webp')"></div>
+          <div class="layer layer--wash"></div>
+        </div>
+
+        <div class="shell confirmed__inner" data-panel>
+          <p class="eyebrow eyebrow--mint">that is the day booked</p>
+          <h2>see you then</h2>
+          <p class="confirmed__slot" data-slot>—</p>
+          <p class="confirmed__note" data-note></p>
+          <div class="row-actions">
+            <a class="btn btn--ghost" href="schedule.html">Change our time</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { mountHud } from './js/hud.mjs';
+      import { initParallax, initReveal } from './js/parallax.mjs';
+      import { armTicks } from './js/sfx.mjs';
+      import { state } from './js/state.mjs';
+
+      const panel = document.querySelector('[data-panel]');
+      const summary = state.get('summary');
+
+      if (summary) {
+        document.querySelector('[data-slot]').textContent = summary;
+        document.querySelector('[data-note]').textContent = state.get('mailed')
+          ? 'It is in my inbox already, and I am not going to be normal about it. Bring Clove. Think about Sage.'
+          : 'Saved, and I will see it either way. Bring Clove. Think about Sage.';
+      } else {
+        // Deep-linked without going through the flow: say so instead of showing a blank.
+        panel.innerHTML = [
+          '<p class="eyebrow">nothing booked yet</p>',
+          '<h2>no time picked</h2>',
+          '<p class="confirmed__note">This page shows the time you picked. You have not picked one yet.</p>',
+          '<div class="row-actions"><a class="btn" href="index.html">Start from the beginning</a></div>',
+        ].join('');
+      }
+
+      mountHud(5);
+      initParallax();
+      initReveal();
+      armTicks();
+    </script>
+  </body>
+</html>

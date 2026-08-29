@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f1923" />
+    <meta name="description" content="An invitation to queue Valorant for one entire day." />
+    <title>Operation: All Day</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230f1923'/%3E%3Cpath d='M4 6l11 14h-6L4 13z' fill='%23ff4655'/%3E%3Cpath d='M28 6L17 20h6l5-7z' fill='%23c347c7'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+  </head>
+  <body>
+    <main>
+      <section class="stage hero">
+        <div class="layers">
+          <div class="layer layer--far" data-depth="0.14" style="background-image: url('img/map-ascent.webp')"></div>
+          <div class="layer layer--mid" data-depth="0.26" style="background-image: url('img/agent-clove-bg.webp')"></div>
+          <div class="layer layer--wash"></div>
+        </div>
+
+        <img class="hero__agent" data-depth="0.34" src="img/agent-clove-full.webp" alt="" aria-hidden="true" />
+
+        <div class="shell hero__grid">
+          <p class="eyebrow" data-reveal>an extremely serious invitation</p>
+
+          <h1 class="hero__name" data-reveal style="--delay: 80ms">Cherry</h1>
+
+          <p class="hero__rule data" data-reveal style="--delay: 160ms">
+            <span class="tint-clove">main: clove</span><span class="sep">/</span>role: controller<span class="sep">/</span
+            ><span class="tint-red">status: about to say yes</span>
+          </p>
+
+          <p class="lead hero__lead" data-reveal style="--delay: 240ms">
+            I saved you a whole day. The entire thing. No plans, no alarm, no <em>I have to be up early</em> —
+            just you, me, and however many rounds it takes before we admit we are tired.
+          </p>
+
+          <div class="hero__actions" data-reveal style="--delay: 320ms">
+            <a class="btn" href="briefing.html">Tell me more</a>
+            <span class="data hero__hint">six little screens. two minutes. one answer.</span>
+          </div>
+        </div>
+
+        <a class="scroll-cue data" href="#pitch" aria-label="Scroll down">Scroll<span></span></a>
+      </section>
+
+      <section class="stage stage--short" id="pitch">
+        <div class="layers">
+          <div class="layer layer--far" data-depth="0.1" style="background-image: url('img/map-lotus.webp')"></div>
+          <div class="layer layer--wash"></div>
+        </div>
+
+        <div class="shell">
+          <p class="eyebrow eyebrow--clove" data-reveal>here is the whole pitch</p>
+          <h2 class="mb-lg" data-reveal style="--delay: 60ms">one day.<br />nothing else booked.</h2>
+
+          <ul class="cards">
+            <li class="panel card" data-reveal style="--delay: 120ms">
+              <span class="card__key data">how long</span>
+              <span class="card__value">all of it</span>
+              <p class="card__note">Morning queue, afternoon slump, second wind at about nine.</p>
+            </li>
+            <li class="panel card" data-reveal style="--delay: 200ms">
+              <span class="card__key data">your job</span>
+              <span class="card__value tint-clove">Clove</span>
+              <p class="card__note">Smoke wherever you like. I will happily walk straight into it.</p>
+            </li>
+            <li class="panel card" data-reveal style="--delay: 280ms">
+              <span class="card__key data">the price</span>
+              <span class="card__value tint-mint">nothing</span>
+              <p class="card__note">You pay in patience, and you have an unreasonable amount of it.</p>
+            </li>
+          </ul>
+
+          <div class="row-actions" data-reveal style="--delay: 340ms">
+            <a class="btn" href="briefing.html">Okay, go on</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { mountHud } from './js/hud.mjs';
+      import { initParallax, initReveal } from './js/parallax.mjs';
+      import { armTicks } from './js/sfx.mjs';
+
+      mountHud(0);
+      initParallax();
+      initReveal();
+      armTicks();
+    </script>
+  </body>
+</html>

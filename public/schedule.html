@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f1923" />
+    <title>Queue time — Operation: All Day</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230f1923'/%3E%3Cpath d='M4 6l11 14h-6L4 13z' fill='%23ff4655'/%3E%3Cpath d='M28 6L17 20h6l5-7z' fill='%23c347c7'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+  </head>
+  <body>
+    <main>
+      <section class="stage">
+        <div class="layers">
+          <div class="layer layer--far" data-depth="0.12" style="background-image: url('img/map-icebox.webp')"></div>
+          <div class="layer layer--wash"></div>
+        </div>
+
+        <div class="shell">
+          <p class="eyebrow eyebrow--clove" data-reveal>the only part left</p>
+          <h2 class="mb-lg" data-reveal style="--delay: 60ms">when are we<br />starting?</h2>
+
+          <form class="sched" novalidate data-form>
+            <div>
+              <div class="field">
+                <span class="field__label data" id="day-label">which day</span>
+                <div class="chips" role="group" aria-labelledby="day-label" data-quick-days></div>
+                <label class="visually-hidden" for="date">Exact date</label>
+                <input class="control" type="date" id="date" name="date" required style="margin-top: 0.7rem" />
+                <span class="field__error" data-error="date" role="alert"></span>
+              </div>
+
+              <div class="field">
+                <span class="field__label data" id="time-label">what time</span>
+                <div class="chips" role="group" aria-labelledby="time-label" data-quick-times></div>
+                <label class="visually-hidden" for="time">Exact time</label>
+                <input class="control" type="time" id="time" name="time" required style="margin-top: 0.7rem" />
+                <span class="field__error" data-error="time" role="alert"></span>
+              </div>
+
+              <div class="field">
+                <span class="field__label data" id="dur-label">how long are you in for</span>
+                <div class="chips" role="radiogroup" aria-labelledby="dur-label" data-durations></div>
+                <span class="field__error" data-error="duration" role="alert"></span>
+              </div>
+
+              <div class="field">
+                <label class="field__label data" for="note">anything you want to add</label>
+                <textarea
+                  class="control"
+                  id="note"
+                  name="note"
+                  maxlength="280"
+                  placeholder="e.g. not playing Icebox, do not even ask"
+                ></textarea>
+              </div>
+            </div>
+
+            <aside class="panel ticket" aria-live="polite">
+              <div class="ticket__head">
+                <span class="data tint-clove">our plan</span>
+                <span class="data" data-ticket-countdown></span>
+              </div>
+              <p class="ticket__when" data-ticket-when>pick a day and a time</p>
+              <p class="ticket__meta" data-ticket-meta>nothing is sent until you press the button.</p>
+              <button class="btn submit" type="submit" data-submit>Lock it in</button>
+              <p class="ticket__status" data-status></p>
+            </aside>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { mountHud } from './js/hud.mjs';
+      import { initParallax, initReveal } from './js/parallax.mjs';
+      import { armTicks, confirm as chime } from './js/sfx.mjs';
+      import { state } from './js/state.mjs';
+      import { DURATIONS, validateInvite, formatSlot, buildMailto } from './js/lib/invite.mjs';
+
+      // The destination address lives in .env on the server, not in this file,
+      // because the repo is public. Fetched once on load so the mailto fallback
+      // still knows where to send if the API is unreachable later.
+      let TO = '';
+      fetch('/api/health')
+        .then((res) => res.json())
+        .then((info) => {
+          TO = info.to || '';
+        })
+        .catch(() => {
+          /* offline: the fallback below degrades to saving the answer locally */
+        });
+
+      const form = document.querySelector('[data-form]');
+      const dateInput = form.date;
+      const timeInput = form.time;
+      const noteInput = form.note;
+      const submit = document.querySelector('[data-submit]');
+      const status = document.querySelector('[data-status]');
+      const when = document.querySelector('[data-ticket-when]');
+      const meta = document.querySelector('[data-ticket-meta]');
+
+      const iso = (d) =>
+        d.getFullYear() +
+        '-' +
+        String(d.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(d.getDate()).padStart(2, '0');
+
+      const addDays = (n) => {
+        const d = new Date();
+        d.setDate(d.getDate() + n);
+        return d;
+      };
+
+      // Bound the picker to the same window the server accepts.
+      dateInput.min = iso(new Date());
+      dateInput.max = iso(addDays(60));
+
+      /** Today, tomorrow, then the next Saturday and Sunday that are not already listed. */
+      function quickDays() {
+        const out = [
+          { label: 'Today', date: addDays(0) },
+          { label: 'Tomorrow', date: addDays(1) },
+        ];
+        for (const target of [6, 0]) {
+          for (let i = 2; i <= 8; i += 1) {
+            const d = addDays(i);
+            if (d.getDay() === target) {
+              out.push({ label: d.toLocaleDateString('en-GB', { weekday: 'long' }), date: d });
+              break;
+            }
+          }
+        }
+        return out;
+      }
+
+      document.querySelector('[data-quick-days]').innerHTML = quickDays()
+        .map(
+          (d, i) =>
+            '<input type="radio" name="quickday" id="qd' + i + '" value="' + iso(d.date) + '">' +
+            '<label for="qd' + i + '"><b>' + d.label + '</b>' +
+            '<small>' + d.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + '</small></label>',
+        )
+        .join('');
+
+      const TIMES = [
+        { label: 'Morning', value: '10:00' },
+        { label: 'Afternoon', value: '14:00' },
+        { label: 'Evening', value: '19:00' },
+        { label: 'Late', value: '22:00' },
+      ];
+
+      document.querySelector('[data-quick-times]').innerHTML = TIMES.map(
+        (t, i) =>
+          '<input type="radio" name="quicktime" id="qt' + i + '" value="' + t.value + '">' +
+          '<label for="qt' + i + '"><b>' + t.label + '</b><small>' + t.value + '</small></label>',
+      ).join('');
+
+      document.querySelector('[data-durations]').innerHTML = DURATIONS.map(
+        (d, i) =>
+          '<input type="radio" name="duration" id="du' + i + '" value="' + d.id + '"' +
+          (i === 0 ? ' checked' : '') + '>' +
+          '<label for="du' + i + '"><b>' + d.label + '</b><small>' + d.blurb + '</small></label>',
+      ).join('');
+
+      // Quick chips fill the real inputs; the inputs stay the source of truth.
+      form.addEventListener('change', (e) => {
+        if (e.target.name === 'quickday') dateInput.value = e.target.value;
+        if (e.target.name === 'quicktime') timeInput.value = e.target.value;
+        if (e.target.name === 'quickday' || e.target.name === 'quicktime') paint();
+      });
+
+      [dateInput, timeInput, noteInput].forEach((el) => el.addEventListener('input', paint));
+
+      const readForm = () => ({
+        date: dateInput.value,
+        time: timeInput.value,
+        duration: new FormData(form).get('duration'),
+        note: noteInput.value,
+      });
+
+      function showErrors(errors = {}) {
+        for (const key of ['date', 'time', 'duration']) {
+          document.querySelector('[data-error="' + key + '"]').textContent = errors[key] || '';
+        }
+      }
+
+      const countdown = document.querySelector('[data-ticket-countdown]');
+
+      /** "today" / "tomorrow" / "in 5 days" — real information, not a fake ticket number. */
+      function daysAway(dateStr) {
+        const [y, m, d] = dateStr.split('-').map(Number);
+        const now = new Date();
+        const diff = Math.round(
+          (new Date(y, m - 1, d) - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000,
+        );
+        if (diff <= 0) return 'today';
+        if (diff === 1) return 'tomorrow';
+        return 'in ' + diff + ' days';
+      }
+
+      function paint() {
+        const result = validateInvite(readForm());
+        if (result.ok) {
+          when.textContent = formatSlot(result.value);
+          meta.textContent = 'this goes straight to me when you confirm.';
+          countdown.textContent = daysAway(result.value.date);
+          showErrors();
+        } else {
+          when.textContent = 'pick a day and a time';
+          meta.textContent = 'nothing is sent until you press the button.';
+          countdown.textContent = '';
+        }
+        return result;
+      }
+
+      function setStatus(text, tone) {
+        status.textContent = text;
+        if (tone) status.dataset.tone = tone;
+        else delete status.dataset.tone;
+      }
+
+      let sending = false;
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (sending) return;
+
+        const result = paint();
+        if (!result.ok) {
+          showErrors(result.errors);
+          setStatus('just the highlighted bits, then we are done.', 'error');
+          return;
+        }
+
+        sending = true;
+        submit.setAttribute('aria-disabled', 'true');
+        submit.textContent = 'Sending…';
+        setStatus('Reaching the server…');
+
+        const payload = result.value;
+        const done = (mailed) => {
+          state.set({ slot: payload, summary: formatSlot(payload), mailed });
+          chime();
+          window.location.href = 'confirmed.html';
+        };
+
+        try {
+          const res = await fetch('/api/invite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const body = await res.json().catch(() => ({}));
+
+          if (!res.ok) {
+            showErrors(body.errors);
+            setStatus(body.error || 'The server refused that. Check the fields.', 'error');
+            sending = false;
+            submit.removeAttribute('aria-disabled');
+            submit.textContent = 'Confirm queue';
+            return;
+          }
+          done(Boolean(body.mailed));
+        } catch {
+          // Server not running, or opened straight from the file system.
+          // Hand it to her mail client rather than losing the answer.
+          if (TO) {
+            setStatus('Opening your mail app instead…');
+            window.location.href = buildMailto(payload, TO);
+            setTimeout(() => done(false), 900);
+          } else {
+            setStatus('Saved. Send it to me directly and I will sort it.', 'error');
+            setTimeout(() => done(false), 700);
+          }
+        }
+      });
+
+      mountHud(4);
+      initParallax();
+      initReveal();
+      armTicks();
+      paint();
+    </script>
+  </body>
+</html>

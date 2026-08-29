@@ -1,0 +1,1025 @@
+/* ============================================================================
+   Page compositions.
+
+   Deliberately asymmetric: art breaks out of its column, the headline overlaps
+   the portrait, and card rows are stepped rather than laid out flat. Even rows
+   of equal boxes are what makes a page look generated rather than composed.
+   ========================================================================== */
+
+.mb-lg {
+  margin-bottom: clamp(1.6rem, 4vw, 2.8rem);
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(0.7rem, 2vw, 1.2rem);
+  margin-top: clamp(1.8rem, 5vw, 3rem);
+}
+
+/* ============================================================================
+   Hero — index.html
+   ========================================================================== */
+
+.hero {
+  align-items: flex-end;
+  padding-bottom: clamp(3.5rem, 12vh, 7rem);
+}
+
+/* Full shell width so the block hangs off the gutter. Constraining it here would
+   fight .shell's auto margins and quietly centre the whole hero. */
+.hero__grid {
+  position: relative;
+  z-index: 2;
+}
+
+.hero__grid > * {
+  max-width: min(56ch, 72%);
+}
+
+@media (max-width: 900px) {
+  .hero__grid > * {
+    max-width: 100%;
+  }
+
+  /* Portrait and copy share the column here, so the art steps back and a scrim
+     goes in underneath the text. Without it the eyebrow and meta row sit
+     directly on Clove's jacket and become unreadable. */
+  .hero__agent {
+    right: -20%;
+    height: min(64vh, 560px);
+    opacity: 0.5;
+  }
+
+  .hero__grid::before {
+    content: '';
+    position: absolute;
+    inset: -16% -50% -40% -50%;
+    z-index: -1;
+    background: linear-gradient(
+      180deg,
+      rgba(8, 13, 19, 0) 0%,
+      rgba(8, 13, 19, 0.9) 14%,
+      rgba(8, 13, 19, 0.97) 100%
+    );
+    pointer-events: none;
+  }
+}
+
+.hero__grid > .hero__name {
+  max-width: none;
+}
+
+/* The portrait bleeds off the right edge and under the headline. */
+.hero__agent {
+  position: absolute;
+  z-index: 1;
+  right: clamp(-9rem, -6vw, -2rem);
+  bottom: 0;
+  height: min(92vh, 900px);
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  object-position: bottom;
+  opacity: 0.9;
+  filter: drop-shadow(-30px 0 60px rgba(8, 13, 19, 0.85));
+  -webkit-mask-image: linear-gradient(180deg, #000 68%, transparent 99%);
+  mask-image: linear-gradient(180deg, #000 68%, transparent 99%);
+  pointer-events: none;
+}
+
+.hero__name {
+  /* Optical alignment: the display face carries side bearing the grid should ignore. */
+  margin-left: -0.045em;
+  margin-bottom: 0.12em;
+  text-shadow: 0 24px 60px rgba(8, 13, 19, 0.8);
+}
+
+.hero__rule {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 1.4rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+  color: var(--dim);
+}
+
+.hero__grid > .hero__rule {
+  max-width: none;
+}
+
+/* This row is about her, so it drops the HUD's uppercase. */
+.hero__rule {
+  text-transform: none;
+  letter-spacing: 0.12em;
+}
+
+.hero__rule .sep {
+  color: var(--dim);
+  opacity: 0.45;
+}
+
+.hero__lead {
+  margin-bottom: 2rem;
+}
+
+.hero__lead em {
+  color: var(--bone);
+  font-style: italic;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(0.9rem, 3vw, 1.8rem);
+}
+
+.hero__hint {
+  color: var(--dim);
+}
+
+.scroll-cue {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: clamp(0.9rem, 3vh, 1.8rem);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--dim);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-size: var(--t-hud);
+}
+
+.scroll-cue span {
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(180deg, var(--red), transparent);
+  animation: cue 1.9s ease-in-out infinite;
+}
+
+@keyframes cue {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+    transform-origin: top;
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+}
+
+/* Stepped, not a flat row of three. */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: clamp(0.9rem, 2.2vw, 1.6rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.card__key {
+  color: var(--dim);
+}
+
+.card__value {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.card__note {
+  margin: 0.4rem 0 0;
+  color: var(--dim);
+  font-size: 0.95em;
+}
+
+@media (min-width: 860px) {
+  .cards > :nth-child(2) {
+    transform: translateY(clamp(1rem, 3vw, 2.4rem));
+  }
+  .cards > :nth-child(3) {
+    transform: translateY(clamp(2rem, 6vw, 4.6rem));
+  }
+}
+
+/* ============================================================================
+   Dossier — briefing.html
+   ========================================================================== */
+
+.dossier {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+}
+
+.dossier__text {
+  position: relative;
+  z-index: 2;
+}
+
+.dossier__art {
+  position: relative;
+  margin: 0;
+  justify-self: center;
+}
+
+.dossier__art img {
+  width: min(430px, 84vw);
+  filter: drop-shadow(0 30px 70px rgba(8, 13, 19, 0.9));
+}
+
+.dossier__art figcaption {
+  position: absolute;
+  right: -0.5rem;
+  bottom: 12%;
+  color: var(--clove);
+  writing-mode: vertical-rl;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-size: var(--t-hud);
+}
+
+@media (min-width: 900px) {
+  .dossier {
+    grid-template-columns: 1.05fr 0.95fr;
+  }
+
+  /* Text sits over the art rather than politely beside it. */
+  .dossier__text {
+    grid-column: 1;
+    grid-row: 1;
+    margin-right: -14%;
+  }
+
+  .dossier__art {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+}
+
+.statline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.2rem, 4vw, 3rem);
+  margin: 2rem 0 0;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+}
+
+.statline dt {
+  color: var(--dim);
+  margin-bottom: 0.25rem;
+}
+
+.statline dd {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.3rem, 1rem + 1.4vw, 1.9rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* ============================================================================
+   Ability kit
+   ========================================================================== */
+
+.kit {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: clamp(0.8rem, 2vw, 1.3rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ability {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'icon key'
+    'name name'
+    'note note';
+  gap: 0.35rem 0.8rem;
+  align-items: center;
+  /* Pack to the top so every card's icon and title sit on the same line,
+     regardless of how long its description runs. */
+  align-content: start;
+}
+
+.ability__icon {
+  grid-area: icon;
+  width: clamp(30px, 6vw, 40px);
+  height: auto;
+  /* Riot ships these white; tint them to the agent. */
+  filter: drop-shadow(0 0 10px rgba(195, 71, 199, 0.55));
+}
+
+.ability__key {
+  grid-area: key;
+  justify-self: start;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--line);
+  color: var(--clove);
+  letter-spacing: 0.2em;
+}
+
+.ability__name {
+  grid-area: name;
+  margin: 0.6rem 0 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.25rem, 1rem + 1.2vw, 1.7rem);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+.ability__note {
+  grid-area: note;
+  margin: 0;
+  color: var(--dim);
+  font-size: 0.94em;
+}
+
+/* The ultimate gets the wide slot, because an ultimate should. */
+@media (min-width: 780px) {
+  .kit > :last-child {
+    grid-column: span 2;
+  }
+}
+
+/* ============================================================================
+   Terms
+   ========================================================================== */
+
+.terms {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: clamp(0.8rem, 2vw, 1.3rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: term;
+}
+
+.term h4 {
+  margin: 0.5rem 0 0.4rem;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.15rem, 0.95rem + 1vw, 1.55rem);
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+
+.term p {
+  margin: 0;
+  color: var(--dim);
+  font-size: 0.94em;
+}
+
+.term__n {
+  color: var(--red);
+  letter-spacing: 0.24em;
+}
+
+@media (min-width: 980px) {
+  .terms > :nth-child(even) {
+    transform: translateY(clamp(1.2rem, 3vw, 2.6rem));
+  }
+}
+
+/* ============================================================================
+   The Sage aside — deliberately reads as an afterthought pinned to the page
+   ========================================================================== */
+
+.note {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: clamp(0.6rem, 2vw, 2rem);
+  align-items: center;
+  margin-top: clamp(2.6rem, 8vw, 5.5rem);
+  padding: clamp(1.2rem, 3vw, 2rem);
+  background: linear-gradient(150deg, rgba(34, 224, 192, 0.09) 0%, rgba(15, 25, 35, 0.94) 60%);
+  border: 1px solid rgba(34, 224, 192, 0.34);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--cut)) 0,
+    100% var(--cut),
+    100% 100%,
+    var(--cut) 100%,
+    0 calc(100% - var(--cut))
+  );
+}
+
+.note__art {
+  width: min(290px, 54vw);
+  justify-self: center;
+  filter: drop-shadow(0 18px 40px rgba(34, 224, 192, 0.22));
+  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 98%);
+  mask-image: linear-gradient(180deg, #000 72%, transparent 98%);
+}
+
+.note__title {
+  margin: 0 0 0.7rem;
+  color: var(--mint);
+}
+
+.note__body p {
+  color: var(--dim);
+}
+
+.note__foot {
+  margin: 0;
+  color: var(--mint);
+  opacity: 0.85;
+  text-transform: none;
+  letter-spacing: 0.1em;
+}
+
+@media (min-width: 760px) {
+  .note {
+    grid-template-columns: auto 1fr;
+  }
+  .note__art {
+    margin-bottom: -1.4rem; /* leans out of the panel, like it was added later */
+  }
+}
+
+/* ============================================================================
+   Roster strip
+   ========================================================================== */
+
+.roster {
+  position: relative;
+  z-index: 2;
+  margin-top: clamp(2.5rem, 8vw, 5rem);
+}
+
+.roster__label {
+  color: var(--dim);
+  margin: 0 0 0.9rem;
+}
+
+.roster__strip {
+  display: flex;
+  gap: clamp(0.4rem, 1.4vw, 0.9rem);
+  overflow-x: auto;
+  padding-bottom: 0.6rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.chip {
+  flex: none;
+  width: clamp(62px, 11vw, 92px);
+  margin: 0;
+  text-align: center;
+  filter: grayscale(1) brightness(0.6);
+  opacity: 0.75;
+  transition: filter 0.3s var(--ease), opacity 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.chip:hover {
+  filter: none;
+  opacity: 1;
+  transform: translateY(-4px);
+}
+
+.chip img {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--steel), var(--navy));
+}
+
+.chip figcaption {
+  margin-top: 0.35rem;
+  font-size: var(--t-hud);
+  color: var(--dim);
+}
+
+/* The one I am hoping for, second only to her main. */
+.chip--wanted {
+  filter: grayscale(0.35) brightness(0.9);
+  opacity: 1;
+}
+
+.chip--wanted img {
+  border-color: rgba(34, 224, 192, 0.6);
+}
+
+.chip--wanted figcaption {
+  color: var(--mint);
+}
+
+/* Her main is the one in colour. */
+.chip--main {
+  filter: none;
+  opacity: 1;
+}
+
+.chip--main img {
+  border-color: var(--clove);
+  box-shadow: 0 0 0 1px rgba(195, 71, 199, 0.35), 0 10px 30px rgba(195, 71, 199, 0.22);
+}
+
+.chip--main figcaption {
+  color: var(--clove);
+}
+
+/* ============================================================================
+   The ask — ask.html
+   ========================================================================== */
+
+.ask {
+  align-items: center;
+  text-align: center;
+}
+
+.ask__inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ask__inner .eyebrow {
+  justify-content: center;
+}
+
+.ask__question {
+  margin-bottom: 1.1rem;
+}
+
+.ask__taunt {
+  min-height: 1.6em;
+  margin: 0 0 clamp(1.8rem, 5vh, 3rem);
+  max-width: 34ch;
+  color: var(--bone);
+  font-size: var(--t-lead);
+  line-height: 1.3;
+}
+
+.ask__taunt.is-new {
+  animation: taunt-in 0.5s var(--ease);
+}
+
+@keyframes taunt-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ask__buttons {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.5rem, 6vw, 4rem);
+  min-height: 96px;
+}
+
+/* Yes is the whole point, so it is sized like it. */
+.ask__yes {
+  --yes-scale: 1;
+  padding: clamp(1.2rem, 3.4vw, 2rem) clamp(2.8rem, 9vw, 5.5rem);
+  font-size: clamp(2rem, 1.2rem + 4.4vw, 4.2rem);
+  letter-spacing: 0.06em;
+  transform: scale(var(--yes-scale));
+  transition: transform 0.45s var(--ease), filter 0.3s var(--ease), box-shadow 0.4s var(--ease);
+  box-shadow: 0 0 0 rgba(255, 70, 85, 0);
+  animation: yes-pulse 3.4s ease-in-out infinite;
+}
+
+.ask__yes:hover,
+.ask__yes:focus-visible {
+  transform: scale(calc(var(--yes-scale) * 1.04));
+}
+
+@keyframes yes-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 70, 85, 0.42);
+  }
+  60% {
+    box-shadow: 0 0 0 26px rgba(255, 70, 85, 0);
+  }
+}
+
+/* No is present, legal, and almost impossible to read. */
+.ask__no {
+  --no-scale: 1;
+  --no-opacity: 0.44;
+  z-index: 40;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--body);
+  font-size: clamp(0.88rem, 0.72rem + 0.5vw, 1.08rem);
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: lowercase;
+  color: var(--bone);
+  opacity: var(--no-opacity);
+  transform: scale(var(--no-scale));
+  /* Slight overshoot so the move reads as darting away rather than cutting. */
+  transition: left 0.34s cubic-bezier(0.34, 1.35, 0.5, 1), top 0.34s cubic-bezier(0.34, 1.35, 0.5, 1),
+    opacity 0.3s linear, transform 0.3s var(--ease);
+}
+
+.ask__no:hover {
+  opacity: calc(var(--no-opacity) + 0.16);
+}
+
+/* Worn down: it becomes readable, and it agrees. */
+.ask__no.is-surrendered {
+  --no-scale: 1;
+  opacity: 0.85;
+  color: var(--mint);
+  letter-spacing: 0.16em;
+  border-bottom: 1px solid currentColor;
+}
+
+.ask__foot {
+  margin-top: clamp(1.6rem, 5vh, 2.6rem);
+  max-width: none;
+  color: var(--dim);
+  text-transform: none;
+  letter-spacing: 0.1em;
+}
+
+.page-ask.is-locking .ask__inner {
+  transition: opacity 0.4s var(--ease), transform 0.5s var(--ease);
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ask__yes {
+    animation: none;
+  }
+  .ask__no {
+    transition: opacity 0.2s linear;
+  }
+}
+
+/* Agent-select diagonal wipe between the ask and the answer. */
+.wipe {
+  position: fixed;
+  inset: -20% -60% -20% -20%;
+  z-index: 90;
+  background: linear-gradient(100deg, var(--clove-deep) 0%, var(--clove) 45%, var(--red) 100%);
+  transform: translateX(-135%) skewX(-12deg);
+  transition: transform 0.75s cubic-bezier(0.7, 0, 0.3, 1);
+  pointer-events: none;
+}
+
+.wipe.is-on {
+  transform: translateX(0) skewX(-12deg);
+  pointer-events: auto;
+}
+
+/* ============================================================================
+   Locked in — yes.html
+   ========================================================================== */
+
+.locked {
+  align-items: center;
+}
+
+.locked__inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* The portrait sits behind the message on this page, so the text gets its own
+   scrim: horizontal on wide screens, vertical once the two share a column. */
+.locked__inner::before {
+  content: '';
+  position: absolute;
+  inset: -14% -20% -14% -50%;
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    rgba(8, 13, 19, 0.97) 0%,
+    rgba(8, 13, 19, 0.95) 52%,
+    rgba(8, 13, 19, 0.6) 78%,
+    rgba(8, 13, 19, 0) 100%
+  );
+  pointer-events: none;
+}
+
+.locked .hero__agent {
+  opacity: 0.6;
+}
+
+@media (max-width: 900px) {
+  .locked__inner::before {
+    background: linear-gradient(
+      180deg,
+      rgba(8, 13, 19, 0) 0%,
+      rgba(8, 13, 19, 0.92) 12%,
+      rgba(8, 13, 19, 0.97) 100%
+    );
+  }
+}
+
+.locked__title {
+  /* Smaller than the index headline so the message and its button still fit
+     inside a 768px-tall landscape iPad. */
+  font-size: clamp(3rem, 1rem + 8.5vw, 7.5rem);
+  margin-bottom: 0.24em;
+  color: var(--mint);
+}
+
+.locked__body {
+  max-width: 48ch;
+  font-size: clamp(1rem, 0.9rem + 0.6vw, 1.35rem);
+  line-height: 1.45;
+}
+
+.locked__body p {
+  margin-bottom: 0.8em;
+}
+
+.locked__body strong {
+  color: var(--bone);
+  font-weight: 600;
+}
+
+.locked__sig {
+  margin-top: 2rem;
+  color: var(--clove);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-size: var(--t-label);
+  font-family: var(--data);
+}
+
+/* ============================================================================
+   Scheduler — schedule.html
+   ========================================================================== */
+
+.sched {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: clamp(1.4rem, 4vw, 2.6rem);
+}
+
+@media (min-width: 940px) {
+  .sched {
+    grid-template-columns: 1fr minmax(340px, 420px);
+    align-items: start;
+  }
+}
+
+.field {
+  margin-bottom: clamp(1.3rem, 3.5vw, 2rem);
+}
+
+.field__label {
+  display: block;
+  margin-bottom: 0.7rem;
+  color: var(--dim);
+}
+
+.field__error {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--red);
+  font-size: 0.88em;
+  min-height: 1.2em;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chips input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chips label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--line);
+  background: rgba(15, 25, 35, 0.55);
+  cursor: pointer;
+  transition: border-color 0.22s, background 0.22s, color 0.22s;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+}
+
+.chips label:hover {
+  border-color: var(--dim);
+}
+
+.chips b {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.15em;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.chips small {
+  font-family: var(--data);
+  font-size: var(--t-hud);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.chips input:checked + label {
+  border-color: var(--clove);
+  background: rgba(195, 71, 199, 0.14);
+  color: var(--bone);
+}
+
+.chips input:focus-visible + label {
+  outline: 2px solid var(--mint);
+  outline-offset: 3px;
+}
+
+.control {
+  width: 100%;
+  padding: 0.8rem 0.95rem;
+  background: rgba(8, 13, 19, 0.75);
+  border: 1px solid var(--line);
+  color: var(--bone);
+  font-family: var(--data);
+  font-size: clamp(1.05rem, 0.9rem + 1vw, 1.5rem);
+  letter-spacing: 0.06em;
+  transition: border-color 0.22s;
+}
+
+.control:hover,
+.control:focus {
+  border-color: var(--clove);
+  outline: none;
+}
+
+textarea.control {
+  font-family: var(--body);
+  font-size: var(--t-body);
+  letter-spacing: 0;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 5.5rem;
+}
+
+.control::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.split {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 520px) {
+  .split {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Live summary card, pinned beside the form on wide screens. */
+.ticket {
+  position: sticky;
+  top: calc(var(--hud-h) + 1.2rem);
+}
+
+.ticket__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  margin-bottom: 1.1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.ticket__when {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.1rem);
+  line-height: 1.02;
+  text-transform: uppercase;
+  margin: 0 0 0.5rem;
+}
+
+.ticket__meta {
+  margin: 0;
+  color: var(--dim);
+  font-size: 0.94em;
+}
+
+.ticket__status {
+  margin: 1.2rem 0 0;
+  min-height: 1.4em;
+  font-family: var(--data);
+  font-size: var(--t-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.ticket__status[data-tone='error'] {
+  color: var(--red);
+}
+.ticket__status[data-tone='ok'] {
+  color: var(--mint);
+}
+
+.submit {
+  width: 100%;
+  margin-top: 1.4rem;
+}
+
+.submit[aria-disabled='true'] {
+  filter: grayscale(0.7) brightness(0.8);
+  cursor: progress;
+}
+
+/* ============================================================================
+   Confirmed — confirmed.html
+   ========================================================================== */
+
+.confirmed {
+  align-items: center;
+  text-align: center;
+}
+
+.confirmed__inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.confirmed__inner .eyebrow {
+  justify-content: center;
+}
+
+.confirmed__slot {
+  margin: 0.6rem 0 1.4rem;
+  padding: clamp(1rem, 3vw, 1.6rem) clamp(1.4rem, 5vw, 3rem);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.4rem, 1rem + 2.6vw, 2.9rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--mint);
+}
+
+.confirmed__note {
+  max-width: 46ch;
+  color: var(--dim);
+}
+
+.confirmed p {
+  margin-inline: auto;
+}
